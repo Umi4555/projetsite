@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin système web</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {}
+  }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <div class="bg-typing" id="bg-typing" aria-hidden="true"></div>
+    <header class="top-bar">
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="users">Utilisateurs</button>
+        <button class="tab-btn" data-tab="groups">Groupes</button>
+        <button class="tab-btn" data-tab="files">Fichiers</button>
+        <button class="tab-btn" data-tab="console">Console</button>
+      </nav>
+    </header>
+
+    <main class="main">
+      <!-- Utilisateurs -->
+      <section class="tab-panel active" id="tab-users">
+        <div class="panel">
+          <h2>Créer / modifier un utilisateur</h2>
+          <form id="form-create-user" class="form-grid">
+            <label>
+              Nom d’utilisateur
+              <input type="text" name="username" required />
+            </label>
+            <label>
+              Mot de passe (optionnel)
+              <input type="password" name="password" />
+            </label>
+            <label>
+              UID (optionnel)
+              <input type="number" name="uid" />
+            </label>
+            <label>
+              Groupe principal (optionnel)
+              <input type="text" name="primaryGroup" />
+            </label>
+            <label>
+              Dossier personnel (optionnel)
+              <input type="text" name="home" placeholder="/home/utilisateur" />
+            </label>
+            <label>
+              Shell (optionnel)
+              <input type="text" name="shell" placeholder="/bin/bash" />
+            </label>
+            <div class="form-actions">
+              <button type="submit">Générer & exécuter</button>
+            </div>
+          </form>
+
+          <div class="preview-block">
+            <h3>Commande générée</h3>
+            <pre id="preview-create-user" class="preview"></pre>
+          </div>
+
+          <div class="panel even">
+            <h2>Modifier le mot de passe</h2>
+            <form id="form-passwd" class="form-grid">
+              <label>
+                Utilisateur
+                <input type="text" name="username" required />
+              </label>
+              <label>
+                Nouveau mot de passe
+                <input type="password" name="password" required />
+              </label>
+              <div class="form-actions">
+                <button type="submit">Générer & exécuter</button>
+              </div>
+            </form>
+            <div class="preview-block">
+              <h3>Commande générée</h3>
+              <pre id="preview-passwd" class="preview"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Groupes -->
+      <section class="tab-panel" id="tab-groups">
+        <div class="panel">
+          <h2>Gestion des groupes</h2>
+          <form id="form-group" class="form-grid">
+            <label>
+              Nom du groupe
+              <input type="text" name="group" required />
+            </label>
+            <label>
+              GID (optionnel)
+              <input type="number" name="gid" />
+            </label>
+            <label>
+              Type d’action
+              <select name="action" required>
+                <option value="create">Créer le groupe (groupadd)</option>
+                <option value="modify">Modifier le groupe (groupmod)</option>
+                <option value="delete">Supprimer le groupe (groupdel)</option>
+              </select>
+            </label>
+            <label>
+              Ajouter un utilisateur au groupe
+              <input type="text" name="userToAdd" placeholder="utilisateur (optionnel)" />
+            </label>
+            <label>
+              Retirer un utilisateur du groupe
+              <input type="text" name="userToRemove" placeholder="utilisateur (optionnel)" />
+            </label>
+            <div class="form-actions">
+              <button type="submit">Générer & exécuter</button>
+            </div>
+          </form>
+
+          <div class="preview-block">
+            <h3>Commandes générées</h3>
+            <pre id="preview-group" class="preview"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fichiers -->
+      <section class="tab-panel" id="tab-files">
+        <div class="panel">
+          <h2>Droits & permissions des fichiers</h2>
+          <form id="form-file" class="form-grid">
+            <label>
+              Chemin du fichier / dossier
+              <input type="text" name="path" placeholder="/chemin/vers/fichier" required />
+            </label>
+            <label>
+              Propriétaire (chown)
+              <input type="text" name="owner" placeholder="utilisateur (optionnel)" />
+            </label>
+            <label>
+              Groupe (chgrp)
+              <input type="text" name="group" placeholder="groupe (optionnel)" />
+            </label>
+            <label>
+              Droits (chmod, ex : 644, 755)
+              <input type="text" name="mode" placeholder="755 (optionnel)" />
+            </label>
+            <label>
+              Récursif
+              <select name="recursive">
+                <option value="no">Non</option>
+                <option value="yes">Oui (-R)</option>
+              </select>
+            </label>
+            <div class="form-actions">
+              <button type="submit">Générer & exécuter</button>
+            </div>
+          </form>
+
+          <div class="preview-block">
+            <h3>Commandes générées</h3>
+            <pre id="preview-file" class="preview"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Console -->
+      <section class="tab-panel" id="tab-console">
+        <div class="panel">
+          <h2>Console</h2>
+          <form id="form-console" class="console-form">
+            <input
+              type="text"
+              name="command"
+              id="console-input"
+              placeholder="Commande shell à exécuter"
+              autocomplete="off"
+              required
+            />
+            <button type="submit">Exécuter</button>
+          </form>
+          <div class="console-output" id="console-output"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="status-bar">
+      <span id="status-text">Prêt</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
